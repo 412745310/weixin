@@ -1,0 +1,16 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd 
+http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+	
+	<!-- 定时器配置，支持从数据库表schedual_job动态设置jobDetail和trigger信息 -->	
+    <bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">  
+        <property name="jobFactory" ref="customJobFactory" />   
+    </bean>
+    <bean id="jobManage" class="com.chelsea.weixin.job.JobManage" init-method="loadJobInit"></bean>
+    
+</beans>
