@@ -21,7 +21,7 @@ import com.chelsea.weixin.util.SignUtil;
  */
 @RestController
 @RequestMapping("/weixin")
-public class WeixinController {
+public class WeixinController { 
 
 	private Logger logger = LoggerFactory.getLogger(WeixinController.class);
 	
