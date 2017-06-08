@@ -21,14 +21,10 @@ import com.chelsea.weixin.util.SignUtil;
  */
 @RestController
 @RequestMapping("/weixin")
-public class WeixinController { 
+public class WeixinController {
 
 	private Logger logger = LoggerFactory.getLogger(WeixinController.class);
 	
-	private int i = 0;
-	
-	private int j = 1;
-
 	// 与接口配置信息中的Token要一致
 	@Value("${weixin.token}")
 	private String token;
