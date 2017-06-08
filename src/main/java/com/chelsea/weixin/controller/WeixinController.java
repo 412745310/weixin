@@ -26,6 +26,8 @@ public class WeixinController {
 	private Logger logger = LoggerFactory.getLogger(WeixinController.class);
 	
 	private int i = 0;
+	
+	private int j = 0;
 
 	// 与接口配置信息中的Token要一致
 	@Value("${weixin.token}")
