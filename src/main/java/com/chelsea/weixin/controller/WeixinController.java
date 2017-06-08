@@ -24,6 +24,8 @@ import com.chelsea.weixin.util.SignUtil;
 public class WeixinController {
 
 	private Logger logger = LoggerFactory.getLogger(WeixinController.class);
+	
+	private int i = 0;
 
 	// 与接口配置信息中的Token要一致
 	@Value("${weixin.token}")
