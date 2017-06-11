@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ImportResource;
 
 @SpringBootApplication
 @Configuration
-@ImportResource(locations={"classpath:spring/spring-job.xml"})
+@ImportResource(locations={"classpath:spring/spring-job.xml", "classpath:spring/spring-redis.xml"})
 public class Application {
 	
 	public static void main(String[] args) {
