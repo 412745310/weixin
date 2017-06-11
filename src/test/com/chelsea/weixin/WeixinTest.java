@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.chelsea.weixin.domain.Token;
+import com.chelsea.weixin.job.impl.TokenJob;
 import com.chelsea.weixin.util.TokenUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -15,12 +16,20 @@ public class WeixinTest {
 
 	@Autowired
 	private TokenUtil tokenUtil;
+	
+	@Autowired
+	private TokenJob tokenJob;
 
 	@Test
 	public void testGetToken() {
 		Token token = tokenUtil.getToken();
 		System.out.println(token.getAccessToken());
 		System.out.println(token.getExpiresIn());
+	}
+	
+	@Test
+	public void testTokenJob(){
+		tokenJob.process();
 	}
 
 }
