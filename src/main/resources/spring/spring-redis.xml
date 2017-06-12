@@ -6,17 +6,17 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 	<bean name="genericObjectPoolConfig" class="org.apache.commons.pool2.impl.GenericObjectPoolConfig">
-		<property name="maxWaitMillis" value="30000" />
-		<property name="maxTotal" value="1000" />
-		<property name="minIdle" value="10" />
-		<property name="maxIdle" value="100" />
+		<property name="maxWaitMillis" value="${redis.maxWaitMillis}" />
+		<property name="maxTotal" value="${redis.maxTotal}" />
+		<property name="minIdle" value="${redis.minIdle}" />
+		<property name="maxIdle" value="${redis.maxIdle}" />
 	</bean>
 	<bean id="jedisCluster" class="com.chelsea.weixin.redis.JedisClusterFactory">
 		<property name="genericObjectPoolConfig" ref="genericObjectPoolConfig" />
-		<property name="connectionTimeout" value="3000" />
-		<property name="soTimeout" value="3000" />
-		<property name="maxRedirections" value="5" />
-		<property name="jedisClusterNodes" value="127.0.0.1:7001;127.0.0.1:7002;127.0.0.1:7003;127.0.0.1:7004;127.0.0.1:7005"/>
+		<property name="connectionTimeout" value="${redis.connectionTimeout}" />
+		<property name="soTimeout" value="${redis.soTimeout}" />
+		<property name="maxRedirections" value="${redis.maxRedirections}" />
+		<property name="jedisClusterNodes" value="${redis.jedisClusterNodes}"/>
 	</bean>
 	
 </beans>
