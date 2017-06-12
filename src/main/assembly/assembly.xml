@@ -28,13 +28,13 @@
 			<directory>src/main/assembly/logs</directory>
 			<outputDirectory>logs</outputDirectory>
 		</fileSet>
-		<fileSet>
+		<!-- <fileSet>
 			<directory>src/main/resources</directory>
 			<outputDirectory>conf</outputDirectory>
 			<includes>
                 <include>*.properties</include>
             </includes>
-		</fileSet>
+		</fileSet> -->
 	</fileSets>
 	<files>  
 	    <file>  
