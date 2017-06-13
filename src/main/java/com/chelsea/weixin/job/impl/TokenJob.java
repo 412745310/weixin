@@ -11,6 +11,7 @@ import redis.clients.jedis.JedisCluster;
 
 import com.chelsea.weixin.domain.Token;
 import com.chelsea.weixin.job.BaseJob;
+import com.chelsea.weixin.util.Constant;
 import com.chelsea.weixin.util.TokenUtil;
 
 /**
@@ -23,8 +24,6 @@ import com.chelsea.weixin.util.TokenUtil;
 public class TokenJob extends BaseJob {
 
 	Logger logger = LoggerFactory.getLogger(TokenJob.class);
-
-	private final static String ACCESS_TOKEN_KEY = "access_token";
 
 	@Autowired
 	private TokenUtil tokenUtil;
@@ -43,8 +42,8 @@ public class TokenJob extends BaseJob {
 		int expiresIn = token.getExpiresIn();
 		logger.info("获取到accessToken：" + accessToken);
 		logger.info("获取到expiresIn：" + expiresIn);
-		jedisCluster.del(ACCESS_TOKEN_KEY);
-		jedisCluster.set(ACCESS_TOKEN_KEY, accessToken, "NX", "EX", expiresIn);
+		jedisCluster.del(Constant.ACCESS_TOKEN_KEY);
+		jedisCluster.set(Constant.ACCESS_TOKEN_KEY, accessToken, "NX", "EX", expiresIn);
 	}
 
 }
