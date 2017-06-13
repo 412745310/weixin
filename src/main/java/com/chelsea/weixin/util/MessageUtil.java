@@ -12,13 +12,13 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.chelsea.weixin.message.resp.Article;
-import com.chelsea.weixin.message.resp.ImageMessage;
-import com.chelsea.weixin.message.resp.MusicMessage;
-import com.chelsea.weixin.message.resp.NewsMessage;
-import com.chelsea.weixin.message.resp.TextMessage;
-import com.chelsea.weixin.message.resp.VideoMessage;
-import com.chelsea.weixin.message.resp.VoiceMessage;
+import com.chelsea.weixin.domain.message.resp.Article;
+import com.chelsea.weixin.domain.message.resp.ImageMessage;
+import com.chelsea.weixin.domain.message.resp.MusicMessage;
+import com.chelsea.weixin.domain.message.resp.NewsMessage;
+import com.chelsea.weixin.domain.message.resp.TextMessage;
+import com.chelsea.weixin.domain.message.resp.VideoMessage;
+import com.chelsea.weixin.domain.message.resp.VoiceMessage;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -28,7 +28,7 @@ import com.thoughtworks.xstream.io.xml.XppDriver;
 /**
  * 消息处理工具类
  * 
- * @author baojun
+ * @author shevchenko
  *
  */
 public class MessageUtil {
