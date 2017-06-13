@@ -5,19 +5,26 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.chelsea.weixin.message.resp.TextMessage;
+import com.chelsea.weixin.domain.menu.Menu;
+import com.chelsea.weixin.domain.message.resp.TextMessage;
+import com.chelsea.weixin.util.MenuUtil;
 import com.chelsea.weixin.util.MessageUtil;
 
 /**
  * 微信service
  * 
- * @author baojun
+ * @author shevchenko
  *
  */
 @Service
 public class WeixinService {
+	
+	@Autowired
+	MenuUtil menuUtil;
+	
 	/**
 	 * 处理微信发来的请求
 	 * 
@@ -106,5 +113,13 @@ public class WeixinService {
 		} catch (Exception e) {
 		}
 		return respXml;
+	}
+	
+	/**
+	 * 创建菜单
+	 * @param menu
+	 */
+	public void createMenu(Menu menu){
+		menuUtil.createMenu(menu);
 	}
 }
