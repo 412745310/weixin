@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.chelsea.weixin.domain.WeixinUserInfo;
 import com.chelsea.weixin.domain.menu.Button;
 import com.chelsea.weixin.domain.menu.CommonButton;
 import com.chelsea.weixin.domain.menu.ComplexButton;
@@ -168,6 +170,15 @@ public class WeixinController {
 		menu.setButton(new Button[] { mainBtn1, mainBtn2, mainBtn3 });
 
 		weixinService.createMenu(menu);
+	}
+	
+	/**
+	 * 获取用户信息
+	 */
+	@RequestMapping("/getuserinfo")
+	@ResponseBody
+	public WeixinUserInfo getUserInfo(String openid){
+		return weixinService.getUserInfo(openid);
 	}
 
 }
