@@ -3,13 +3,24 @@ package com.chelsea.weixin.service;
 import java.util.Date;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import net.sf.json.JSONObject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import redis.clients.jedis.JedisCluster;
+
+import com.chelsea.weixin.domain.WeixinUserInfo;
 import com.chelsea.weixin.domain.menu.Menu;
 import com.chelsea.weixin.domain.message.resp.TextMessage;
+import com.chelsea.weixin.util.Constant;
+import com.chelsea.weixin.util.HttpsUtil;
 import com.chelsea.weixin.util.MenuUtil;
 import com.chelsea.weixin.util.MessageUtil;
 
@@ -22,9 +33,17 @@ import com.chelsea.weixin.util.MessageUtil;
 @Service
 public class WeixinService {
 	
+	private Logger logger = LoggerFactory.getLogger(WeixinService.class);
+
 	@Autowired
 	MenuUtil menuUtil;
-	
+
+	@Resource(name = "jedisCluster")
+	JedisCluster jedisCluster;
+
+	@Value("${weixin.userinfoUrl}")
+	private String userinfoUrl;
+
 	/**
 	 * 处理微信发来的请求
 	 * 
@@ -46,6 +65,7 @@ public class WeixinService {
 			// 消息类型
 			String msgType = requestMap.get("MsgType");
 
+			logger.info("接收到来自" + fromUserName + "发来的消息");
 			// 回复文本消息
 			TextMessage textMessage = new TextMessage();
 			textMessage.setToUserName(fromUserName);
@@ -114,12 +134,57 @@ public class WeixinService {
 		}
 		return respXml;
 	}
-	
+
 	/**
 	 * 创建菜单
+	 * 
 	 * @param menu
 	 */
-	public void createMenu(Menu menu){
+	public void createMenu(Menu menu) {
 		menuUtil.createMenu(menu);
+	}
+
+	/**
+	 * 获取用户信息
+	 */
+	public WeixinUserInfo getUserInfo(String openid) {
+		try {
+			String accessToken = jedisCluster.get(Constant.ACCESS_TOKEN_KEY);
+			String requestUrl = userinfoUrl
+					.replace("ACCESS_TOKEN", accessToken).replace("OPENID",
+							openid);
+			JSONObject jsonObject = HttpsUtil.httpsRequest(requestUrl, "GET",
+					null);
+			WeixinUserInfo weixinUserInfo = null;
+			if (null != jsonObject) {
+				weixinUserInfo = new WeixinUserInfo();
+				// 用户的标识
+				weixinUserInfo.setOpenId(jsonObject.getString("openid"));
+				// 关注状态（1是关注，0是未关注），未关注时获取不到其余信息
+				weixinUserInfo.setSubscribe(jsonObject.getInt("subscribe"));
+				// 用户关注时间
+				weixinUserInfo.setSubscribeTime(jsonObject
+						.getString("subscribe_time"));
+				// 昵称
+				weixinUserInfo.setNickname(jsonObject.getString("nickname"));
+				// 用户的性别（1是男性，2是女性，0是未知）
+				weixinUserInfo.setSex(jsonObject.getInt("sex"));
+				// 用户所在国家
+				weixinUserInfo.setCountry(jsonObject.getString("country"));
+				// 用户所在省份
+				weixinUserInfo.setProvince(jsonObject.getString("province"));
+				// 用户所在城市
+				weixinUserInfo.setCity(jsonObject.getString("city"));
+				// 用户的语言，简体中文为zh_CN
+				weixinUserInfo.setLanguage(jsonObject.getString("language"));
+				// 用户头像
+				weixinUserInfo
+						.setHeadImgUrl(jsonObject.getString("headimgurl"));
+			}
+			return weixinUserInfo;
+		} catch (Exception e) {
+			logger.error("获取用户信息出错" + e.getMessage());
+			throw new RuntimeException("获取用户信息出错" + e.getMessage());
+		}
 	}
 }
