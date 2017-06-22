@@ -1,13 +1,16 @@
 package com.chelsea.weixin.service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,8 @@ import org.springframework.stereotype.Service;
 
 import redis.clients.jedis.JedisCluster;
 
+import com.chelsea.weixin.domain.SNSUserInfo;
+import com.chelsea.weixin.domain.WeixinOauth2Token;
 import com.chelsea.weixin.domain.WeixinUserInfo;
 import com.chelsea.weixin.domain.menu.Menu;
 import com.chelsea.weixin.domain.message.resp.TextMessage;
@@ -23,6 +28,7 @@ import com.chelsea.weixin.util.Constant;
 import com.chelsea.weixin.util.HttpsUtil;
 import com.chelsea.weixin.util.MenuUtil;
 import com.chelsea.weixin.util.MessageUtil;
+import com.chelsea.weixin.util.TokenUtil;
 
 /**
  * 微信service
@@ -37,12 +43,18 @@ public class WeixinService {
 
 	@Autowired
 	MenuUtil menuUtil;
+	
+	@Autowired
+	TokenUtil tokenUtil;
 
 	@Resource(name = "jedisCluster")
 	JedisCluster jedisCluster;
 
 	@Value("${weixin.userinfoUrl}")
 	private String userinfoUrl;
+	
+	@Value("${weixin.oauth2UserinfoUrl}")
+	private String oauth2UserinfoUrl;
 
 	/**
 	 * 处理微信发来的请求
@@ -186,5 +198,60 @@ public class WeixinService {
 			logger.error("获取用户信息出错" + e.getMessage());
 			throw new RuntimeException("获取用户信息出错" + e.getMessage());
 		}
+	}
+	
+	/**
+	 * 授权认证
+	 * @param code
+	 */
+	@SuppressWarnings({ "unchecked", "deprecation" })
+	public SNSUserInfo authorize(String code){
+		SNSUserInfo snsUserInfo = null;
+		String value = jedisCluster.get(code);
+		String accessToken = "";
+		String openId = "";
+		if(StringUtils.isBlank(value)){
+			// 获取网页授权access_token
+	        WeixinOauth2Token weixinOauth2Token = tokenUtil.getOauth2AccessToken(code);
+	        // 网页授权接口访问凭证
+	        accessToken = weixinOauth2Token.getAccessToken();
+	        // 用户标识
+	        openId = weixinOauth2Token.getOpenId();
+	        jedisCluster.set(code, accessToken + "|" + openId, "NX", "EX", 300);
+		}else{
+			String[] arr = value.split("\\|");
+			accessToken = arr[0];
+			openId = arr[1];
+		}
+        String requestUrl = oauth2UserinfoUrl.replace("ACCESS_TOKEN", accessToken).replace("OPENID", openId);
+        // 通过网页授权获取用户信息
+        JSONObject jsonObject = HttpsUtil.httpsRequest(requestUrl, "GET", null);
+        if (null != jsonObject) {
+            try {
+                snsUserInfo = new SNSUserInfo();
+                // 用户的标识
+                snsUserInfo.setOpenId(jsonObject.getString("openid"));
+                // 昵称
+                snsUserInfo.setNickname(jsonObject.getString("nickname"));
+                // 性别（1是男性，2是女性，0是未知）
+                snsUserInfo.setSex(jsonObject.getInt("sex"));
+                // 用户所在国家
+                snsUserInfo.setCountry(jsonObject.getString("country"));
+                // 用户所在省份
+                snsUserInfo.setProvince(jsonObject.getString("province"));
+                // 用户所在城市
+                snsUserInfo.setCity(jsonObject.getString("city"));
+                // 用户头像
+                snsUserInfo.setHeadImgUrl(jsonObject.getString("headimgurl"));
+                // 用户特权信息
+                snsUserInfo.setPrivilegeList(JSONArray.toList(jsonObject.getJSONArray("privilege"), List.class));
+            } catch (Exception e) {
+                snsUserInfo = null;
+                int errorCode = jsonObject.getInt("errcode");
+                String errorMsg = jsonObject.getString("errmsg");
+                logger.error("获取用户信息失败 errcode:{} errmsg:{}", errorCode, errorMsg);
+            }
+        }
+        return snsUserInfo;
 	}
 }
