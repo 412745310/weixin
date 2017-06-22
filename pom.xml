@@ -21,10 +21,12 @@
 	</parent>
 
 	<dependencies>
+		<!-- 单元测试的支持 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 		</dependency>
+		<!-- web的支持 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -34,10 +36,12 @@
 			<artifactId>spring-context-support</artifactId>
 			<version>4.3.8.RELEASE</version>
 		</dependency>
+		<!-- redis的支持 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
+		<!-- mybatis的支持 -->
 		<dependency>
 		    <groupId>org.mybatis.spring.boot</groupId>
 		    <artifactId>mybatis-spring-boot-starter</artifactId>
@@ -74,6 +78,10 @@
 		    <artifactId>quartz</artifactId>
 		    <version>2.2.1</version>
 		</dependency>
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>
 	</dependencies>
 
 	<build>
