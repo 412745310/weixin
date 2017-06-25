@@ -10,5 +10,6 @@ public class Constant {
 	public final static String ACCESS_TOKEN_KEY = "access_token";
 	public final static String SNSAPI_USERINFO = "snsapi_userinfo";
 	public final static String SNSAPI_BASE = "snsapi_base";
+	public final static String JSAPI_TICKET = "jsapi_ticket";
 
 }

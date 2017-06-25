@@ -29,6 +29,7 @@ import com.chelsea.weixin.util.HttpsUtil;
 import com.chelsea.weixin.util.MenuUtil;
 import com.chelsea.weixin.util.MessageUtil;
 import com.chelsea.weixin.util.TokenUtil;
+import com.chelsea.weixin.util.WeixinUtil;
 
 /**
  * 微信service
@@ -55,6 +56,9 @@ public class WeixinService {
 	
 	@Value("${weixin.oauth2UserinfoUrl}")
 	private String oauth2UserinfoUrl;
+	
+	@Autowired
+	private WeixinUtil weixinUtil;
 
 	/**
 	 * 处理微信发来的请求
@@ -135,7 +139,7 @@ public class WeixinService {
 				}
 				// 自定义菜单
 				else if (eventType.equals(MessageUtil.EVENT_TYPE_CLICK)) {
-					// TODO 处理菜单点击事件
+					respContent = "您发送的是点击消息！";
 				}
 			}
 			// 设置文本消息的内容
@@ -254,4 +258,13 @@ public class WeixinService {
         }
         return snsUserInfo;
 	}
+	
+	/**
+	 * 获取微信配置信息
+	 * @param request
+	 * @return
+	 */
+	public Map<String, Object> getWxConfig(String url){
+		return weixinUtil.getWxConfig(url);
+	} 
 }

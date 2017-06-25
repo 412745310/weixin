@@ -1,5 +1,7 @@
 package com.chelsea.weixin.controller;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.chelsea.weixin.domain.SNSUserInfo;
+import com.chelsea.weixin.domain.WeixinConfig;
 import com.chelsea.weixin.domain.WeixinUserInfo;
 import com.chelsea.weixin.domain.menu.Button;
 import com.chelsea.weixin.domain.menu.CommonButton;
@@ -51,7 +54,7 @@ public class WeixinController extends SpringBootServletInitializer{
 
 	@Autowired
 	private WeixinService weixinService;
-
+	
 	/**
 	 * 确认请求来自微信服务器
 	 * 
@@ -62,6 +65,7 @@ public class WeixinController extends SpringBootServletInitializer{
 	 * @return
 	 */
 	@RequestMapping(value = "/get_message", method = RequestMethod.GET)
+	@ResponseBody
 	public String getMessage(String signature, String timestamp, String nonce,
 			String echostr) {
 		logger.info("signature:" + signature);
@@ -84,6 +88,7 @@ public class WeixinController extends SpringBootServletInitializer{
 	 * @return
 	 */
 	@RequestMapping(value = "/get_message", method = RequestMethod.POST)
+	@ResponseBody
 	public String getMessage(HttpServletRequest request) {
 		String respXml = weixinService.processRequest(request);
 		return respXml;
@@ -107,7 +112,6 @@ public class WeixinController extends SpringBootServletInitializer{
 		url = url.replace("REDIRECT_URI", CommonUtil.urlEncodeUTF8(oauth2RedirectUrl));
 		url = url.replace("SCOPE", Constant.SNSAPI_USERINFO);
 		btn12.setUrl(url);
-		logger.info("-----> url :" + url);
 		
 		CommonButton btn21 = new CommonButton();
 		btn21.setName("歌曲点播");
@@ -168,10 +172,30 @@ public class WeixinController extends SpringBootServletInitializer{
 	    return "index";
 	}
 	
-	public static void main(String[] args) {
-		String oauth2AuthorizeUrl = "123123|dasdsad";
-		String[] url = oauth2AuthorizeUrl.split("\\|");
-		System.out.println(url[0]);
+	/**
+	 * 获取微信配置信息
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/getWxConfig")
+	@ResponseBody
+	public WeixinConfig getWxConfig(String url){
+		Map<String, Object> wxConfigMap = weixinService.getWxConfig(url);
+		String appId = wxConfigMap.get("appId").toString();
+		String timestamp = wxConfigMap.get("timestamp").toString();
+		String nonceStr = wxConfigMap.get("nonceStr").toString();
+		String signature = wxConfigMap.get("signature").toString();
+		WeixinConfig config = new WeixinConfig();
+		config.setAppId(appId);
+		config.setTimestamp(timestamp);
+		config.setNonceStr(nonceStr);
+		config.setSignature(signature);
+		return config;
+	}
+	
+	@RequestMapping("share")
+	public String share(){
+		return "share";
 	}
 	
 }
