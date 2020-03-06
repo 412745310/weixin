@@ -1,5 +1,7 @@
 package com.chelsea.weixin.domain.message.resp;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 /**
  * 消息基类（公众帐号 -> 普通用户）
  * 
@@ -8,47 +10,51 @@ package com.chelsea.weixin.domain.message.resp;
  */
 public class BaseMessage {
 	// 接收方帐号（收到的OpenID）
-	private String ToUserName;
+    @XStreamAlias("ToUserName")
+	private String toUserName;
 	// 开发者微信号
-	private String FromUserName;
+    @XStreamAlias("FromUserName")
+	private String fromUserName;
 	// 消息创建时间 （整型）
-	private long CreateTime;
+    @XStreamAlias("CreateTime")
+	private long createTime;
 	// 消息类型
-	private String MsgType;
+    @XStreamAlias("MsgType")
+	private String msgType;
 
 	public BaseMessage() {
 	}
 
-	public String getToUserName() {
-		return ToUserName;
-	}
+    public String getToUserName() {
+        return toUserName;
+    }
 
-	public void setToUserName(String toUserName) {
-		ToUserName = toUserName;
-	}
+    public void setToUserName(String toUserName) {
+        this.toUserName = toUserName;
+    }
 
-	public String getFromUserName() {
-		return FromUserName;
-	}
+    public String getFromUserName() {
+        return fromUserName;
+    }
 
-	public void setFromUserName(String fromUserName) {
-		FromUserName = fromUserName;
-	}
+    public void setFromUserName(String fromUserName) {
+        this.fromUserName = fromUserName;
+    }
 
-	public long getCreateTime() {
-		return CreateTime;
-	}
+    public long getCreateTime() {
+        return createTime;
+    }
 
-	public void setCreateTime(long createTime) {
-		CreateTime = createTime;
-	}
+    public void setCreateTime(long createTime) {
+        this.createTime = createTime;
+    }
 
-	public String getMsgType() {
-		return MsgType;
-	}
+    public String getMsgType() {
+        return msgType;
+    }
 
-	public void setMsgType(String msgType) {
-		MsgType = msgType;
-	}
+    public void setMsgType(String msgType) {
+        this.msgType = msgType;
+    }
 
 }
