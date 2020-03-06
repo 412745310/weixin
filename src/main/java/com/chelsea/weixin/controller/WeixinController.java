@@ -75,9 +75,11 @@ public class WeixinController extends SpringBootServletInitializer{
 		boolean flag = SignUtil.checkSignature(signature, timestamp, nonce,
 				token);
 		if (flag) {
+		    logger.info("验证成功");
 			return echostr;
 		} else {
-			return "";
+		    logger.info("验证失败");
+			return null;
 		}
 	}
 
