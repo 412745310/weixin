@@ -145,7 +145,8 @@ public class WeixinService {
 			// 设置文本消息的内容
 			textMessage.setContent(respContent);
 			// 将文本消息对象转换成xml
-			respXml = MessageUtil.messageToXml(textMessage);
+			// respXml = MessageUtil.messageToXml(textMessage);
+			respXml = MessageUtil.beanToXml(textMessage);
 		} catch (Exception e) {
 		}
 		return respXml;
