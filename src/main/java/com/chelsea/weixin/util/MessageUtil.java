@@ -13,6 +13,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import com.chelsea.weixin.domain.message.resp.Article;
+import com.chelsea.weixin.domain.message.resp.BaseMessage;
 import com.chelsea.weixin.domain.message.resp.ImageMessage;
 import com.chelsea.weixin.domain.message.resp.MusicMessage;
 import com.chelsea.weixin.domain.message.resp.NewsMessage;
@@ -206,5 +207,23 @@ public class MessageUtil {
 		xstream.alias("xml", newsMessage.getClass());
 		xstream.alias("item", new Article().getClass());
 		return xstream.toXML(newsMessage);
+	}
+	
+	/**
+	 * 对象转换成xml
+	 * 
+	 * @param message
+	 * @return
+	 */
+	public static String beanToXml(BaseMessage message) {
+	    XStream xstream = new XStream();
+	    xstream.processAnnotations(TextMessage.class);
+	    xstream.processAnnotations(ImageMessage.class);
+	    xstream.processAnnotations(MusicMessage.class);
+	    xstream.processAnnotations(NewsMessage.class);
+	    xstream.processAnnotations(VideoMessage.class);
+	    xstream.processAnnotations(VoiceMessage.class);
+	    String xml = xstream.toXML(message);
+	    return xml;
 	}
 }
