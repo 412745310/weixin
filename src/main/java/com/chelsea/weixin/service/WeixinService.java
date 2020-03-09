@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import redis.clients.jedis.JedisCluster;
 
@@ -57,6 +59,12 @@ public class WeixinService {
 	@Value("${weixin.oauth2UserinfoUrl}")
 	private String oauth2UserinfoUrl;
 	
+	@Value("${juhe.chat-robot.url}")
+	private String juheChatRobotUrl;
+	
+	@Value("${juhe.chat-robot.key}")
+    private String juheChatRobotKey;
+	
 	@Autowired
 	private WeixinUtil weixinUtil;
 
@@ -80,6 +88,8 @@ public class WeixinService {
 			String toUserName = requestMap.get("ToUserName");
 			// 消息类型
 			String msgType = requestMap.get("MsgType");
+			// 消息文本
+			String content = requestMap.get("Content");
 
 			logger.info("接收到来自" + fromUserName + "发来的消息");
 			// 回复文本消息
@@ -142,14 +152,29 @@ public class WeixinService {
 					respContent = "您发送的是点击消息！";
 				}
 			}
+			String chat = getChat(content);
 			// 设置文本消息的内容
-			textMessage.setContent(respContent);
+			textMessage.setContent(chat + "\n" + respContent);
 			// 将文本消息对象转换成xml
 			// respXml = MessageUtil.messageToXml(textMessage);
 			respXml = MessageUtil.beanToXml(textMessage);
 		} catch (Exception e) {
 		}
 		return respXml;
+	}
+	
+	/**
+	 * 获取聊天内容
+	 * 
+	 * @return
+	 */
+	private String getChat(String content) {
+	    MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<>();
+	    paramMap.add("key", juheChatRobotKey);
+	    paramMap.add("info", content);
+	    JSONObject jsonObject = HttpsUtil.post(juheChatRobotUrl, paramMap);
+	    String res = jsonObject.getJSONObject("result").getString("text");
+	    return res;
 	}
 
 	/**
