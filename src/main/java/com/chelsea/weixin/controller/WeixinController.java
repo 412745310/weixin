@@ -116,8 +116,8 @@ public class WeixinController extends SpringBootServletInitializer{
 		btn12.setUrl(url);
 		
 		CommonButton btn21 = new CommonButton();
-		btn21.setName("歌曲点播");
-		btn21.setType("click");
+		btn21.setName("身份证识别");
+		btn21.setType("pic_photo_or_album");
 		btn21.setKey("21");
 
 		CommonButton btn31 = new CommonButton();
@@ -135,7 +135,7 @@ public class WeixinController extends SpringBootServletInitializer{
 		mainBtn1.setSub_button(new CommonButton[] { btn11, btn12});
 
 		ComplexButton mainBtn2 = new ComplexButton();
-		mainBtn2.setName("休闲驿站");
+		mainBtn2.setName("AI工具");
 		mainBtn2.setSub_button(new CommonButton[] { btn21});
 
 		ComplexButton mainBtn3 = new ComplexButton();

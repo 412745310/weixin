@@ -26,6 +26,8 @@ import com.chelsea.weixin.domain.WeixinOauth2Token;
 import com.chelsea.weixin.domain.WeixinUserInfo;
 import com.chelsea.weixin.domain.menu.Menu;
 import com.chelsea.weixin.domain.message.resp.TextMessage;
+import com.chelsea.weixin.util.BaiduAIUtil;
+import com.chelsea.weixin.util.CommonUtil;
 import com.chelsea.weixin.util.Constant;
 import com.chelsea.weixin.util.HttpsUtil;
 import com.chelsea.weixin.util.MenuUtil;
@@ -88,25 +90,16 @@ public class WeixinService {
 			String toUserName = requestMap.get("ToUserName");
 			// 消息类型
 			String msgType = requestMap.get("MsgType");
-			// 消息文本
-			String content = requestMap.get("Content");
-
-			logger.info("接收到来自" + fromUserName + "发来的消息");
-			// 回复文本消息
-			TextMessage textMessage = new TextMessage();
-			textMessage.setToUserName(fromUserName);
-			textMessage.setFromUserName(toUserName);
-			textMessage.setCreateTime(new Date().getTime());
-			textMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_TEXT);
-
+			logger.info("receive message : {}", requestMap);
 			// 文本消息
 			if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_TEXT)) {
-				String chat = getChat(content);
-				respContent = chat + "\n您发送的是文本消息！";
+	            String content = requestMap.get("Content");
+			    respContent = getChat(content);
 			}
 			// 图片消息
 			else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_IMAGE)) {
-				respContent = "您发送的是图片消息！";
+			    String picUrl = requestMap.get("PicUrl");
+				respContent = getImage(picUrl);
 			}
 			// 语音消息
 			else if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_VOICE)) {
@@ -150,21 +143,38 @@ public class WeixinService {
 				}
 				// 自定义菜单
 				else if (eventType.equals(MessageUtil.EVENT_TYPE_CLICK)) {
-				    String eventKey = requestMap.get("EventKey");
-					respContent = eventKey + "\n您发送的是点击消息！";
+				    respContent = requestMap.get("EventKey");
 				}
 			}
-			// 设置文本消息的内容
+			// 回复文本消息
+            TextMessage textMessage = new TextMessage();
+            textMessage.setToUserName(fromUserName);
+            textMessage.setFromUserName(toUserName);
+            textMessage.setCreateTime(new Date().getTime());
+            textMessage.setMsgType(MessageUtil.RESP_MESSAGE_TYPE_TEXT);
 			textMessage.setContent(respContent);
 			// 将文本消息对象转换成xml
-			// respXml = MessageUtil.messageToXml(textMessage);
 			respXml = MessageUtil.beanToXml(textMessage);
 		} catch (Exception e) {
+		    logger.error(e.getMessage(), e);
 		}
 		return respXml;
 	}
 	
 	/**
+	 * 获取图片信息
+	 * @param picUrl
+	 * @return
+	 */
+	private String getImage(String picUrl) {
+	    // 微信远程图片保存到本地
+	    String downloadPicture = CommonUtil.downloadPicture(picUrl);
+	    // 调用百度AI身份证识别接口
+	    String content = BaiduAIUtil.IdCardIdentification(downloadPicture);
+        return content;
+    }
+
+    /**
 	 * 获取聊天内容
 	 * 
 	 * @return
