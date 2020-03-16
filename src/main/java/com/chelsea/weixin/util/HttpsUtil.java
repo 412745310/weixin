@@ -91,7 +91,7 @@ public class HttpsUtil {
     }
 
     /**
-     * 发送get请求
+     * 发送post请求(form-data)
      * 
      * @param url
      * @param paramMap
@@ -100,6 +100,19 @@ public class HttpsUtil {
     public static JSONObject post(String url, MultiValueMap<String, Object> paramMap) {
         RestTemplate restTemplate = new RestTemplate();
         JSONObject jsonObj = restTemplate.postForObject(url, paramMap, JSONObject.class);
+        return jsonObj;
+    }
+    
+    /**
+     * 发送post请求(json方式)
+     * 
+     * @param url
+     * @param paramMap
+     * @return
+     */
+    public static JSONObject post(String url, JSONObject paramJson) {
+        RestTemplate restTemplate = new RestTemplate();
+        JSONObject jsonObj = restTemplate.postForObject(url, paramJson, JSONObject.class);
         return jsonObj;
     }
 
