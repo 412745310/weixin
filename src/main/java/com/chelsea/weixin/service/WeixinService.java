@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import redis.clients.jedis.JedisCluster;
 
@@ -69,6 +71,9 @@ public class WeixinService {
 	
 	@Autowired
 	private WeixinUtil weixinUtil;
+	
+	@Value("${weixin.setIndustryUrl}")
+    private String setIndustryUrl;
 
 	/**
 	 * 处理微信发来的请求
@@ -303,5 +308,18 @@ public class WeixinService {
 	 */
 	public Map<String, Object> getWxConfig(String url){
 		return weixinUtil.getWxConfig(url);
-	} 
+	}
+	
+	/**
+     * 设置所属行业
+     */
+    public String setIndustry() {
+        JSONObject paramJson = new JSONObject();
+        paramJson.put("industry_id1", "1");
+        paramJson.put("industry_id2", "4");
+        String accessToken = jedisCluster.get(Constant.ACCESS_TOKEN_KEY);
+        String url = setIndustryUrl.replace("ACCESS_TOKEN", accessToken);
+        JSONObject result = HttpsUtil.post(url, paramJson);
+        return result.toString();
+    }
 }

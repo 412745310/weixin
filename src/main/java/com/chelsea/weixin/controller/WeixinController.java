@@ -55,6 +55,9 @@ public class WeixinController extends SpringBootServletInitializer{
 	@Autowired
 	private WeixinService weixinService;
 	
+	@Value("${weixin.setIndustryUrl}")
+	private String setIndustryUrl;
+	
 	/**
 	 * 确认请求来自微信服务器
 	 * 
@@ -100,6 +103,7 @@ public class WeixinController extends SpringBootServletInitializer{
 	 * 创建菜单
 	 */
 	@RequestMapping("/create_menu")
+	@ResponseBody
 	public void createMenu() {
 		CommonButton btn11 = new CommonButton();
 		btn11.setName("百度");
@@ -198,6 +202,15 @@ public class WeixinController extends SpringBootServletInitializer{
 	@RequestMapping("share")
 	public String share(){
 		return "share";
+	}
+	
+	/**
+	 * 设置所属行业
+	 */
+	@RequestMapping("/setIndustry")
+	@ResponseBody
+	public String setIndustry() {
+	    return weixinService.setIndustry();
 	}
 	
 }
