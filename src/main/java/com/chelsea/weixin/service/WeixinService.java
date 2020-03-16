@@ -1,6 +1,7 @@
 package com.chelsea.weixin.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,8 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import redis.clients.jedis.JedisCluster;
 
@@ -314,9 +313,10 @@ public class WeixinService {
      * 设置所属行业
      */
     public String setIndustry() {
-        JSONObject paramJson = new JSONObject();
-        paramJson.put("industry_id1", "1");
-        paramJson.put("industry_id2", "4");
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("industry_id1", "1");
+        paramMap.put("industry_id2", "4");
+        JSONObject paramJson = JSONObject.fromObject(paramMap);
         String accessToken = jedisCluster.get(Constant.ACCESS_TOKEN_KEY);
         String url = setIndustryUrl.replace("ACCESS_TOKEN", accessToken);
         JSONObject result = HttpsUtil.post(url, paramJson);
