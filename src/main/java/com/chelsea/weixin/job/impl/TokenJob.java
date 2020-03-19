@@ -53,7 +53,7 @@ public class TokenJob extends BaseJob {
 		// 生成并缓存jsapi_ticket
 		String jsapi_ticket = "";
 		String url = ticketUrl.replace("ACCESS_TOKEN", accessToken);
-		JSONObject json = HttpsUtil.httpsRequest(url, "GET", null);
+		JSONObject json = HttpsUtil.get(url);
 		if (json != null) {
 			jsapi_ticket = json.getString("ticket");
 		}

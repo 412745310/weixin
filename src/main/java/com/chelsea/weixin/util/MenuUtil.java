@@ -47,7 +47,7 @@ public class MenuUtil {
 		// 将菜单对象转换成json字符串
 		String jsonMenu = JSONObject.fromObject(menu).toString();
 		// 调用接口创建菜单
-		JSONObject jsonObject = HttpsUtil.httpsRequest(url, "POST", jsonMenu);
+		JSONObject jsonObject = HttpsUtil.get(url);
 		if (null != jsonObject) {
 			if (0 != jsonObject.getInt("errcode")) {
 				result = jsonObject.getInt("errcode");

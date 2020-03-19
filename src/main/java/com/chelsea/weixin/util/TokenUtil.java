@@ -48,7 +48,7 @@ public class TokenUtil {
 		String requestUrl = tokenurl.replace("APPID", appid).replace(
 				"APPSECRET", appsecret);
 		// 发起GET请求获取凭证
-		JSONObject jsonObject = HttpsUtil.httpsRequest(requestUrl, "GET", null);
+		JSONObject jsonObject = HttpsUtil.get(requestUrl);
 
 		if (null != jsonObject) {
 			try {
@@ -76,7 +76,7 @@ public class TokenUtil {
         // 拼接请求地址
         String requestUrl = oauth2AccessTokenUrl.replace("APPID", appid).replace("SECRET", appsecret).replace("CODE", code);
         // 获取网页授权凭证
-        JSONObject jsonObject = HttpsUtil.httpsRequest(requestUrl, "GET", null);
+        JSONObject jsonObject = HttpsUtil.get(requestUrl);
         if (null != jsonObject) {
             try {
                 wat = new WeixinOauth2Token();
