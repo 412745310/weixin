@@ -213,4 +213,25 @@ public class WeixinController extends SpringBootServletInitializer{
 	    return weixinService.setIndustry();
 	}
 	
+	/**
+	 * 新增素材
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/addMedia")
+    @ResponseBody
+	public String addMedia() {
+	    return weixinService.addMedia();
+	}
+	
+	/**
+     * 获得素材
+     * 
+     * @return
+     */
+    @RequestMapping("/getMedia")
+    public String getMedia() {
+        return weixinService.getMedia();
+    }
+	
 }
