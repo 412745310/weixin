@@ -16,6 +16,9 @@ import net.sf.json.JSONObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
@@ -89,31 +92,36 @@ public class HttpsUtil {
         }
         return jsonObject;
     }
-
-    /**
-     * 发送post请求(form-data)
-     * 
-     * @param url
-     * @param paramMap
-     * @return
-     */
-    public static JSONObject post(String url, MultiValueMap<String, Object> paramMap) {
-        RestTemplate restTemplate = new RestTemplate();
-        JSONObject jsonObj = restTemplate.postForObject(url, paramMap, JSONObject.class);
-        return jsonObj;
-    }
     
     /**
-     * 发送post请求(json方式)
+     * 发送https get请求
      * 
      * @param url
      * @param paramMap
      * @return
      */
-    public static JSONObject post(String url, JSONObject paramJson) {
-        RestTemplate restTemplate = new RestTemplate();
-        JSONObject jsonObj = restTemplate.postForObject(url, paramJson, JSONObject.class);
-        return jsonObj;
+    public static JSONObject get(String url) {
+        RestTemplate restTemplate = new RestTemplate(new HttpsClientRequestFactory());
+        String result = restTemplate.getForObject(url, String.class);
+        return JSONObject.fromObject(result);
     }
 
+    /**
+     * 发送https post请求上传文件(form)
+     * 
+     * @param url
+     * @param paramMap
+     * @return
+     */
+    public static JSONObject postFile(String url, MultiValueMap<String, Object> paramMap) {
+        RestTemplate restTemplate = new RestTemplate(new HttpsClientRequestFactory());
+        //设置请求头
+        HttpHeaders headers = new HttpHeaders();
+        MediaType type = MediaType.parseMediaType("multipart/form-data");
+        headers.setContentType(type);
+        //用HttpEntity封装整个请求报文
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(paramMap, headers);
+        String result = restTemplate.postForObject(url, httpEntity, String.class);
+        return JSONObject.fromObject(result);
+    }
 }
