@@ -82,6 +82,12 @@ public class WeixinService {
     
     @Value("${weixin.getMediaUrl}")
     private String getMediaUrl;
+    
+    @Value("${weixin.getQrTicketUrl}")
+    private String getQrTicketUrl;
+    
+    @Value("${weixin.getQrCodeUrl}")
+    private String getQrCodeUrl;
 
     /**
      * 处理微信发来的请求
@@ -358,6 +364,29 @@ public class WeixinService {
         String accessToken = jedisCluster.get(Constant.ACCESS_TOKEN_KEY);
         String url = getMediaUrl.replace("ACCESS_TOKEN", accessToken).replace("MEDIA_ID", "QK_sj5olN6WLAqMW4CtZVsIfdqo1NDRTWFXcdTd-jolq3OhgFQBsCxh4R2_vrKRQ");
         return "redirect:" + url;
+    }
+    
+    /**
+     * 获得公众号二维码
+     * 
+     * @return
+     */
+    public String getQrCode() {
+        Map<String, Object> sceneStrMap = new HashMap<>();
+        sceneStrMap.put("scene_str", "test");
+        Map<String, Object> sceneMap = new HashMap<>();
+        sceneMap.put("scene", sceneStrMap);
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("expire_seconds", "2592000");
+        paramMap.put("action_name", "QR_STR_SCENE");
+        paramMap.put("action_info", sceneMap);
+        JSONObject paramJson = JSONObject.fromObject(paramMap);
+        String accessToken = jedisCluster.get(Constant.ACCESS_TOKEN_KEY);
+        String qrTicketUrl = getQrTicketUrl.replace("ACCESS_TOKEN", accessToken);
+        JSONObject qrTicketJson = HttpUtil.post(qrTicketUrl, paramJson);
+        String ticket = qrTicketJson.getString("ticket");
+        String qrCodeUrl = getQrCodeUrl.replace("TICKET", ticket);
+        return "redirect:" + qrCodeUrl;
     }
     
 }

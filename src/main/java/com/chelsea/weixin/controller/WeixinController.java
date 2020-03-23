@@ -233,5 +233,15 @@ public class WeixinController extends SpringBootServletInitializer{
     public String getMedia() {
         return weixinService.getMedia();
     }
+    
+    /**
+     * 获得二维码
+     * 
+     * @return
+     */
+    @RequestMapping("/getQrCode")
+    public String getQrCode() {
+        return weixinService.getQrCode();
+    }
 	
 }
