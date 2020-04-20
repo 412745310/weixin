@@ -115,7 +115,7 @@ public class WeixinController extends SpringBootServletInitializer{
 		btn12.setType("view");
 		String url = oauth2AuthorizeUrl.replace("APPID", appid);
 		url = url.replace("STATE", "123");
-		url = url.replace("REDIRECT_URI", CommonUtil.urlEncodeUTF8(oauth2RedirectUrl));
+		// url = url.replace("REDIRECT_URI", CommonUtil.urlEncodeUTF8(oauth2RedirectUrl));
 		url = url.replace("SCOPE", Constant.SNSAPI_USERINFO);
 		btn12.setUrl(url);
 		
